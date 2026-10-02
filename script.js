@@ -76,16 +76,35 @@ function typeDigits(button) {
 }
 
 function typeOperators(button) {
+    if (calculated || error) {
+        display.textContent = "";
+        number1 = "";
+        operator = "";
+        number2 = "";
+        calculated = false;
+        error = false;
+    }
+    
     if(!number1) {
         return;
     }
     if (operator) {
         if(number2) {
             let result = operate(Number(number1), operator, Number(number2))
-            display.textContent = result + button.textContent;
-            number1 = String(result);
-            operator = button.textContent;
-            number2 = "";
+            if (typeof result === "number") {
+                display.textContent = result + button.textContent;
+                number1 = String(result);
+                operator = button.textContent;
+                number2 = "";
+            }
+            else {
+                display.textContent = result;
+                number1 = "";
+                operator = "";
+                number2 = "";
+                calculated = false;
+                error = true;
+            }
         }
         else {
             display.textContent = number1 + button.textContent;
@@ -132,8 +151,8 @@ function backspace() {
 
 const display = document.querySelector(".calculator-display");
 
-const digitButtons = document.querySelectorAll(".digits-container button");
-const operatorButtons = document.querySelectorAll(".operators-container button");
+const digitButtons = document.querySelectorAll(".digit");
+const operatorButtons = document.querySelectorAll(".operator");
 
 digitButtons.forEach((button) => {
     button.addEventListener("click", () => {
